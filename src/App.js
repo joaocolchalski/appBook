@@ -40,7 +40,7 @@ export default function App() {
         const realm = await getRealm()
 
         const id = realm.objects('Book').sorted('id', true).length > 0
-            ? realm.objects('Book').sorted('id', true)[0].id + 1 : 1
+            ? realm.objects('Book').sorted('id', true)[0].id + 1 : 1 //O TRUE dentro do sorted significa que o resultado vai ser ordenado de forma decrescente, se fosse FALSE, seria de forma crescente
 
         const dadosLivro = {
             id: id,
@@ -100,7 +100,7 @@ export default function App() {
                 realm.create('Book', newData, 'modified')
             })
 
-            const dadosAlterados = realm.objects('Book').sorted('id', false)
+            const dadosAlterados = realm.objects('Book').sorted('id', false)//O FALSE dentro do sorted significa que o resultado vai ser ordenado de forma crescente, se fosse TRUE, seria de forma decrescente
             setBooks(dadosAlterados)
             setName('')
             setPrice('')
@@ -117,6 +117,24 @@ export default function App() {
         setRenderButtonEdit(false)
         setErrInputName(false)
         setErrInputPrice(false)
+    }
+
+    async function deleteBook(data) {
+        const realm = await getRealm()
+
+        const id = data.id
+
+        realm.write(() => {
+            if (realm.objects('Book').filtered('id =' + id).length > 0) {
+                realm.delete(
+                    realm.objects('Book').filtered('id =' + id)
+                )
+            }
+        })
+
+        const dadosAlterados = realm.objects('Book').sorted('id', false)//O FALSE dentro do sorted significa que o resultado vai ser ordenado de forma crescente, se fosse TRUE, seria de forma decrescente
+
+        setBooks(dadosAlterados)
     }
 
     function validateInput(text, inputRef) {
@@ -172,7 +190,7 @@ export default function App() {
             <List
                 data={books}
                 keyExtractor={item => String(item.id)}
-                renderItem={({ item }) => <Books data={item} editBook={editBook} />}
+                renderItem={({ item }) => <Books data={item} editBook={editBook} deleteBook={deleteBook} />}
                 showsVerticalScrollIndicator={false}
                 keyboardShouldPersistTaps='handled' //Fecha o input quando clica na lista
             />

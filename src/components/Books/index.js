@@ -8,7 +8,7 @@ import {
     TextButton,
 } from './styles';
 
-export default function Books({ data, editBook }) {
+export default function Books({ data, editBook, deleteBook }) {
     return (
         <Container>
             <Nome>{data.name}</Nome>
@@ -20,7 +20,7 @@ export default function Books({ data, editBook }) {
                     <TextButton>Editar</TextButton>
                 </Button>
 
-                <Button>
+                <Button onPress={() => deleteBook(data)}>
                     <TextButton>Excluir</TextButton>
                 </Button>
             </ButtonsView>
